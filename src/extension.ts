@@ -1,9 +1,8 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { GitExtension } from './git';
 import parse from "diffparser";
 
+// counts number of +/- changes in all changed files
 const getAddsAndDels = async (diff: string): Promise<[number, number]> => {
 	const parsedDiff = parse(diff);
 
@@ -19,23 +18,19 @@ const getAddsAndDels = async (diff: string): Promise<[number, number]> => {
 
 export async function activate(context: vscode.ExtensionContext) {
 
+	// set up git extension api and show error notification if not found
 	const gitExtension = await vscode.extensions.getExtension<GitExtension>('vscode.git')?.activate();
 	
 	if (!gitExtension) {
 		vscode.window.showErrorMessage('Git extension not found. Commit Reminder requires the VSCode Git extension.');
 		
-		const showError = () => {
-			vscode.window.showErrorMessage('Commit Reminder requires the VSCode Git extension.');
-		};
-
-		vscode.commands.registerCommand("commit-reminder.countChanges", showError);
-
 		return;
 	}
 
 	const git = gitExtension.getAPI(1);
 	const repo = git.repositories[0];
 
+	// mutes autocheck notifications for 5 minutes
 	const setRemindersMuted = () => {
 		context.workspaceState.update("areRemindersMuted", true);
 
@@ -48,8 +43,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	const muteReminders = vscode.commands.registerCommand('commit-reminder.muteReminders', setRemindersMuted);
 
-	context.subscriptions.push(muteReminders);
-
+	// checks on file save if number of +/- changes is above threshold for prompting 
 	const autoCheckChanges = vscode.commands.registerCommand('commit-reminder.autoCheckChanges', () => {
 			vscode.workspace.onDidSaveTextDocument(async () => {
 				if (!context.workspaceState.get<boolean>("areRemindersMuted")) {
@@ -72,8 +66,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		});
 	});
 
-	context.subscriptions.push(autoCheckChanges);
-
+	// updates threshold with user input
 	const changeThreshold = vscode.commands.registerCommand('commit-reminder.changeThreshold', async () => {
 		const input = await vscode.window.showInputBox(
 			{ 
@@ -96,8 +89,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		context.globalState.update("threshold", newThreshold);
 	});
 
-	context.subscriptions.push(changeThreshold);
-
+	// shows number of +/- changes
 	const countChanges = vscode.commands.registerCommand('commit-reminder.countChanges', async () => {
 		const diff = await repo.diff(false);
 		const [totalAdds, totalDels] = await getAddsAndDels(diff);
@@ -105,7 +97,8 @@ export async function activate(context: vscode.ExtensionContext) {
 		vscode.window.showInformationMessage(`Total changes: +${totalAdds} | -${totalDels}`);
 	});
 
-	context.subscriptions.push(countChanges);
+	// push all disposables
+	context.subscriptions.push(muteReminders, autoCheckChanges, changeThreshold, countChanges);
 
 }
 
