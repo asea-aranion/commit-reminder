@@ -24,6 +24,10 @@
 	  {
 		"command": "commit-reminder.changeThreshold",
 		"title": "Change Threshold"
+	  },
+	  {
+		"command": "commit-reminder.muteReminders",
+		"title": "Mute Commit Reminders"
 	  }
     ]
   },

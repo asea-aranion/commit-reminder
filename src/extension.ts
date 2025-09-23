@@ -36,16 +36,39 @@ export async function activate(context: vscode.ExtensionContext) {
 	const git = gitExtension.getAPI(1);
 	const repo = git.repositories[0];
 
+	const setRemindersMuted = () => {
+		context.workspaceState.update("areRemindersMuted", true);
+
+		setTimeout(() => {
+			context.workspaceState.update("areRemindersMuted", false);
+		}, 5 * 60 * 1000);
+
+		vscode.window.showInformationMessage("You will not receive commit reminders in this workspace for 5 minutes.");
+	};
+
+	const muteReminders = vscode.commands.registerCommand('commit-reminder.muteReminders', setRemindersMuted);
+
+	context.subscriptions.push(muteReminders);
+
 	const autoCheckChanges = vscode.commands.registerCommand('commit-reminder.autoCheckChanges', () => {
 			vscode.workspace.onDidSaveTextDocument(async () => {
-			const threshold = context.globalState.get<number>("threshold") ?? 50;
+				if (!context.workspaceState.get<boolean>("areRemindersMuted")) {
+					const threshold = context.globalState.get<number>("threshold") ?? 50;
 
-			const diff = await repo.diff(false);
-			const [totalAdds, totalDels] = await getAddsAndDels(diff);
+					const diff = await repo.diff(false);
+					const [totalAdds, totalDels] = await getAddsAndDels(diff);
 
-			if (totalAdds + totalDels > threshold) {
-				vscode.window.showWarningMessage(`You have more than ${threshold} uncommitted changes. You may want to stage and commit changes now.`);
-			}
+					if (totalAdds + totalDels > threshold) {
+						const selection = await vscode.window.showWarningMessage(
+							`You have more than ${threshold} uncommitted changes. You may want to stage and commit changes now.`,
+							"Mute for 5 minutes"
+						);
+
+						if (selection) {
+							setRemindersMuted();
+						}
+					}
+				}
 		});
 	});
 
