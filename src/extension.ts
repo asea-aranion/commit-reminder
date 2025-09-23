@@ -38,18 +38,42 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	const autoCheckChanges = vscode.commands.registerCommand('commit-reminder.autoCheckChanges', () => {
 			vscode.workspace.onDidSaveTextDocument(async () => {
-			const threshold = context.globalState.get<number>("threshold") ?? 1;
+			const threshold = context.globalState.get<number>("threshold") ?? 50;
 
 			const diff = await repo.diff(false);
 			const [totalAdds, totalDels] = await getAddsAndDels(diff);
 
 			if (totalAdds + totalDels > threshold) {
-				vscode.window.showInformationMessage(`You have more than ${threshold} uncommitted changes. You may want to stage and commit changes now.`);
+				vscode.window.showWarningMessage(`You have more than ${threshold} uncommitted changes. You may want to stage and commit changes now.`);
 			}
 		});
 	});
 
 	context.subscriptions.push(autoCheckChanges);
+
+	const changeThreshold = vscode.commands.registerCommand('commit-reminder.changeThreshold', async () => {
+		const input = await vscode.window.showInputBox(
+			{ 
+				prompt: "Number of uncommitted changes after which you would like to be prompted",
+				placeHolder: "50"
+			});
+
+		if (!input) {
+			vscode.window.showErrorMessage("A value must be entered for the new threshold.");
+			return;
+		}
+
+		const newThreshold = Number.parseInt(input);
+
+		if (Number.isNaN(newThreshold) || newThreshold < 0) {
+			vscode.window.showErrorMessage("The new threshold must be a valid positive integer.");
+			return;
+		}
+
+		context.globalState.update("threshold", newThreshold);
+	});
+
+	context.subscriptions.push(changeThreshold);
 
 	const countChanges = vscode.commands.registerCommand('commit-reminder.countChanges', async () => {
 		const diff = await repo.diff(false);

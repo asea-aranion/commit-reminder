@@ -20,6 +20,10 @@
 	  {
 		"command": "commit-reminder.autoCheckChanges",
 		"title": "Start Auto Change Checking"
+	  },
+	  {
+		"command": "commit-reminder.changeThreshold",
+		"title": "Change Threshold"
 	  }
     ]
   },
