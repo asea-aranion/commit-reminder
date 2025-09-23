@@ -33,7 +33,15 @@
 		"command": "commit-reminder.muteReminders",
 		"title": "Mute Commit Reminders"
 	  }
-    ]
+    ],
+	"keybindings": [
+		{
+			"command": "commit-reminder.autoCheckChanges",
+			"mac": "cmd+alt+=",
+			"win": "ctrl+alt+=",
+			"linux": "ctrl+alt+="
+		}
+	]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
