@@ -22,8 +22,12 @@
 		"title": "Start Auto Change Checking"
 	  },
 	  {
-		"command": "commit-reminder.changeThreshold",
-		"title": "Change Threshold"
+		"command": "commit-reminder.changeGlobalDefaultThreshold",
+		"title": "Change Global Default Threshold"
+	  },
+	  {
+		"command": "commit-reminder.changeWorkspaceThreshold",
+		"title": "Change Workspace Threshold"
 	  },
 	  {
 		"command": "commit-reminder.muteReminders",
