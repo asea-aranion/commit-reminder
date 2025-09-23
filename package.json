@@ -14,13 +14,13 @@
   "contributes": {
     "commands": [
       {
-        "command": "commit-reminder.helloWorld",
-        "title": "Hello World"
-      },
-      {
         "command": "commit-reminder.countChanges",
         "title": "Count Changes"
-      }
+      },
+	  {
+		"command": "commit-reminder.autoCheckChanges",
+		"title": "Start Auto Change Checking"
+	  }
     ]
   },
   "scripts": {

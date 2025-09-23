@@ -4,8 +4,19 @@ import * as vscode from 'vscode';
 import { GitExtension } from './git';
 import parse from "diffparser";
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
+const getAddsAndDels = async (diff: string): Promise<[number, number]> => {
+	const parsedDiff = parse(diff);
+
+	let totalAdds = 0, totalDels = 0;
+
+	for (const fileDiff of parsedDiff) {
+		totalAdds += fileDiff.additions;
+		totalDels += fileDiff.deletions;
+	}
+
+	return [totalAdds, totalDels];
+};
+
 export async function activate(context: vscode.ExtensionContext) {
 
 	const gitExtension = await vscode.extensions.getExtension<GitExtension>('vscode.git')?.activate();
@@ -25,23 +36,30 @@ export async function activate(context: vscode.ExtensionContext) {
 	const git = gitExtension.getAPI(1);
 	const repo = git.repositories[0];
 
+	const autoCheckChanges = vscode.commands.registerCommand('commit-reminder.autoCheckChanges', () => {
+			vscode.workspace.onDidSaveTextDocument(async () => {
+			const threshold = context.globalState.get<number>("threshold") ?? 1;
+
+			const diff = await repo.diff(false);
+			const [totalAdds, totalDels] = await getAddsAndDels(diff);
+
+			if (totalAdds + totalDels > threshold) {
+				vscode.window.showInformationMessage(`You have more than ${threshold} uncommitted changes. You may want to stage and commit changes now.`);
+			}
+		});
+	});
+
+	context.subscriptions.push(autoCheckChanges);
+
 	const countChanges = vscode.commands.registerCommand('commit-reminder.countChanges', async () => {
 		const diff = await repo.diff(false);
-		const parsedDiff = parse(diff);
+		const [totalAdds, totalDels] = await getAddsAndDels(diff);
 
-		let totalAdds = 0, totalDels = 0;
-
-		for (const fileDiff of parsedDiff) {
-			totalAdds += fileDiff.additions;
-			totalDels += fileDiff.deletions;
-		}
-
-		vscode.window.showInformationMessage("Total changes: +" + totalAdds + " | -" + totalDels);
+		vscode.window.showInformationMessage(`Total changes: +${totalAdds} | -${totalDels}`);
 	});
 
 	context.subscriptions.push(countChanges);
 
 }
 
-// This method is called when your extension is deactivated
 export function deactivate() {}
