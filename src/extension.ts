@@ -1,25 +1,46 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import { GitExtension } from './git';
+import parse from "diffparser";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "commit-reminder" is now active!');
+	const gitExtension = await vscode.extensions.getExtension<GitExtension>('vscode.git')?.activate();
+	
+	if (!gitExtension) {
+		vscode.window.showErrorMessage('Git extension not found. Commit Reminder requires the VSCode Git extension.');
+		
+		const showError = () => {
+			vscode.window.showErrorMessage('Commit Reminder requires the VSCode Git extension.');
+		};
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('commit-reminder.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from Commit Reminder!');
+		vscode.commands.registerCommand("commit-reminder.countChanges", showError);
+
+		return;
+	}
+
+	const git = gitExtension.getAPI(1);
+	const repo = git.repositories[0];
+
+	const countChanges = vscode.commands.registerCommand('commit-reminder.countChanges', async () => {
+		const diff = await repo.diff(false);
+		const parsedDiff = parse(diff);
+
+		let totalAdds = 0, totalDels = 0;
+
+		for (const fileDiff of parsedDiff) {
+			totalAdds += fileDiff.additions;
+			totalDels += fileDiff.deletions;
+		}
+
+		vscode.window.showInformationMessage("Total changes: +" + totalAdds + " | -" + totalDels);
 	});
 
-	context.subscriptions.push(disposable);
+	context.subscriptions.push(countChanges);
+
 }
 
 // This method is called when your extension is deactivated
