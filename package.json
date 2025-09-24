@@ -1,7 +1,8 @@
 {
   "name": "commit-reminder",
   "displayName": "Commit Reminder",
-  "description": "",
+  "description": "Reminds you to commit after a large number of uncommitted changes",
+  "publisher": "asea-aranion",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.104.0"
