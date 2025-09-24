@@ -3,6 +3,10 @@
   "displayName": "Commit Reminder",
   "description": "Reminds you to commit after a large number of uncommitted changes",
   "publisher": "asea-aranion",
+  "repository": {
+	"type": "git",
+	"url": "https://github.com/asea-aranion/commit-reminder"
+  },
   "version": "0.1.0",
   "engines": {
     "vscode": "^1.104.0"
