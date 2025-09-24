@@ -3,7 +3,7 @@
   "displayName": "Commit Reminder",
   "description": "Reminds you to commit after a large number of uncommitted changes",
   "publisher": "asea-aranion",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.104.0"
   },
@@ -18,31 +18,31 @@
         "command": "commit-reminder.countChanges",
         "title": "Count Changes"
       },
-	  {
-		"command": "commit-reminder.autoCheckChanges",
-		"title": "Start Auto Change Checking"
-	  },
-	  {
-		"command": "commit-reminder.changeGlobalDefaultThreshold",
-		"title": "Change Global Default Threshold"
-	  },
-	  {
-		"command": "commit-reminder.changeWorkspaceThreshold",
-		"title": "Change Workspace Threshold"
-	  },
-	  {
-		"command": "commit-reminder.muteReminders",
-		"title": "Mute Commit Reminders"
-	  }
+      {
+        "command": "commit-reminder.autoCheckChanges",
+        "title": "Start Auto Change Checking"
+      },
+      {
+        "command": "commit-reminder.changeGlobalDefaultThreshold",
+        "title": "Change Global Default Threshold"
+      },
+      {
+        "command": "commit-reminder.changeWorkspaceThreshold",
+        "title": "Change Workspace Threshold"
+      },
+      {
+        "command": "commit-reminder.muteReminders",
+        "title": "Mute Commit Reminders"
+      }
     ],
-	"keybindings": [
-		{
-			"command": "commit-reminder.autoCheckChanges",
-			"mac": "cmd+alt+=",
-			"win": "ctrl+alt+=",
-			"linux": "ctrl+alt+="
-		}
-	]
+    "keybindings": [
+      {
+        "command": "commit-reminder.autoCheckChanges",
+        "mac": "cmd+alt+=",
+        "win": "ctrl+alt+=",
+        "linux": "ctrl+alt+="
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
