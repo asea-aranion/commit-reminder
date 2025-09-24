@@ -1,4 +1,4 @@
-# Commit Reminder
+# Commitiquette
 
 ## Features
 
@@ -7,7 +7,7 @@
 
 ## Setup
 
-1. Install and enable Commit Reminder
+1. Install and enable Commitiquette
 2. Set reminder thresholds with the `Change Global Default Threshold` and `Change Workspace Threshold` commands
 3. Enable autochecking with any of the following:
 	- `Start Auto Change Checking` command 

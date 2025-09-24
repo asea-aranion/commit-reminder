@@ -1,11 +1,11 @@
 {
-  "name": "commit-reminder",
-  "displayName": "Commit Reminder",
-  "description": "Reminds you to commit after a large number of uncommitted changes",
+  "name": "commitiquette",
+  "displayName": "Commitiquette",
+  "description": "Notifies you to commit after a large number of uncommitted changes",
   "publisher": "asea-aranion",
   "repository": {
 	"type": "git",
-	"url": "https://github.com/asea-aranion/commit-reminder"
+	"url": "https://github.com/asea-aranion/commitiquette"
   },
   "version": "0.1.0",
   "engines": {
@@ -19,29 +19,29 @@
   "contributes": {
     "commands": [
       {
-        "command": "commit-reminder.countChanges",
+        "command": "commitiquette.countChanges",
         "title": "Count Changes"
       },
       {
-        "command": "commit-reminder.autoCheckChanges",
+        "command": "commitiquette.autoCheckChanges",
         "title": "Start Auto Change Checking"
       },
       {
-        "command": "commit-reminder.changeGlobalDefaultThreshold",
+        "command": "commitiquette.changeGlobalDefaultThreshold",
         "title": "Change Global Default Threshold"
       },
       {
-        "command": "commit-reminder.changeWorkspaceThreshold",
+        "command": "commitiquette.changeWorkspaceThreshold",
         "title": "Change Workspace Threshold"
       },
       {
-        "command": "commit-reminder.muteReminders",
+        "command": "commitiquette.muteReminders",
         "title": "Mute Commit Reminders"
       }
     ],
     "keybindings": [
       {
-        "command": "commit-reminder.autoCheckChanges",
+        "command": "commitiquette.autoCheckChanges",
         "mac": "cmd+alt+=",
         "win": "ctrl+alt+=",
         "linux": "ctrl+alt+="

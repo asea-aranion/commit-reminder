@@ -22,7 +22,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	const gitExtension = await vscode.extensions.getExtension<GitExtension>('vscode.git')?.activate();
 	
 	if (!gitExtension) {
-		vscode.window.showErrorMessage('Git extension not found. Commit Reminder requires the VSCode Git extension.');
+		vscode.window.showErrorMessage('Git extension not found. Commitiquette requires the VSCode Git extension.');
 		
 		return;
 	}
@@ -37,10 +37,10 @@ export async function activate(context: vscode.ExtensionContext) {
 		vscode.window.showInformationMessage("You will not receive commit reminders in this workspace for 5 minutes.");
 	};
 
-	const muteReminders = vscode.commands.registerCommand('commit-reminder.muteReminders', setRemindersMuted);
+	const muteReminders = vscode.commands.registerCommand('commitiquette.muteReminders', setRemindersMuted);
 
 	// checks on file save if number of +/- changes is above threshold for prompting 
-	const autoCheckChanges = vscode.commands.registerCommand('commit-reminder.autoCheckChanges', () => {
+	const autoCheckChanges = vscode.commands.registerCommand('commitiquette.autoCheckChanges', () => {
 
 			vscode.workspace.onDidSaveTextDocument(async () => {
 
@@ -67,7 +67,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 
 	// updates global threshold with user input
-	const changeGlobalDefaultThreshold = vscode.commands.registerCommand('commit-reminder.changeGlobalDefaultThreshold', async () => {
+	const changeGlobalDefaultThreshold = vscode.commands.registerCommand('commitiquette.changeGlobalDefaultThreshold', async () => {
 		const input = await vscode.window.showInputBox(
 			{ 
 				prompt: "Number of uncommitted changes after which you would like to be prompted (by default in all workspaces)",
@@ -90,7 +90,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 
 	// updates workspace-specific threshold with user input
-	const changeWorkspaceThreshold = vscode.commands.registerCommand('commit-reminder.changeWorkspaceThreshold', async () => {
+	const changeWorkspaceThreshold = vscode.commands.registerCommand('commitiquette.changeWorkspaceThreshold', async () => {
 		const input = await vscode.window.showInputBox(
 			{ 
 				prompt: "Number of uncommitted changes after which you would like to be prompted (in this workspace only)",
@@ -113,7 +113,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 
 	// shows number of +/- changes
-	const countChanges = vscode.commands.registerCommand('commit-reminder.countChanges', async () => {
+	const countChanges = vscode.commands.registerCommand('commitiquette.countChanges', async () => {
 		const diff = await repo.diff(false);
 		const [totalAdds, totalDels] = await getAddsAndDels(diff);
 
